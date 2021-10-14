@@ -11,8 +11,8 @@ public:
   virtual ~TSite();
 
   //Class Members
-  //! Linear dimension of the grid
-  static constexpr int Lx = 2000, Ly = 1500;
+  //! Linear dimension of the grid: MUST BE MULTIPLE OF 4!!
+  static constexpr int Lx = 500, Ly = 360;
 
   //! Site coordinates.
   //! Be careful: this are lattice coordinate that should be rescaled in real world by...

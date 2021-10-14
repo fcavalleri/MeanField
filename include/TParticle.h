@@ -58,6 +58,27 @@ public:
   //! Clear the Lattice where the particle was before moving
   void ClearParticlePosition();
 
+    //! Set the RSite & LSite
+    void RecalcExtSites();
+
+    //! Link realization sintaxis
+    void DLAs(TParticle &pPart);
+    void DLBs(TParticle &pPart);
+    void YLL(TParticle &pPart);
+    void YLB(TParticle &pPart);
+    void YLA(TParticle &pPart);
+    void YLR(TParticle &pPart);
+
+    //! If it's possible a closure over the input particle, occurs
+    bool CheckClose();
+    bool CheckCloseYLA(TParticle &pPart);
+    bool CheckCloseYLB(TParticle &pPart);
+    bool CheckCloseYLR(TParticle &pPart);
+    bool CheckCloseYLL(TParticle &pPart);
+
+    //! Check if a new added monomer in the aggregate is on the border
+    void CheckBorder();
+
   friend std::ostream &operator<<(std::ostream &os,
                                   const TParticle &me);  //passo l'indirizzo ma non può modificare la variabile (const)
 
@@ -77,8 +98,6 @@ private:
   void RandomizePosition();
   //! Give random orientation at the present monomer
   void RandomizeOrientation();
-  //! Set the RSite & LSite
-  void RecalcExtSites();
   //! Movement of a FREE particle. If not meet the aggregates, moves free
   bool FreeMove();
 
@@ -89,24 +108,6 @@ private:
   bool CheckJoinWithCSite(TParticle &pPart);
   bool CheckJoinWithLSite(TParticle &pPart);
   bool CheckJoinWithRSite(TParticle &pPart);
-
-  //! Link realization sintaxis
-  void DLAs(TParticle &pPart);
-  void DLBs(TParticle &pPart);
-  void YLL(TParticle &pPart);
-  void YLB(TParticle &pPart);
-  void YLA(TParticle &pPart);
-  void YLR(TParticle &pPart);
-
-  //! If it's possible a closure over the input particle, occurs
-  bool CheckClose();
-  bool CheckCloseYLA(TParticle &pPart);
-  bool CheckCloseYLB(TParticle &pPart);
-  bool CheckCloseYLR(TParticle &pPart);
-  bool CheckCloseYLL(TParticle &pPart);
-
-  //! Check if a new added monomer in the aggregate is on the border
-  void CheckBorder();
 
   bool CheckAggregate(TSite pSite);
 };

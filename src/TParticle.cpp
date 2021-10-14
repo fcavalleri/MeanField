@@ -23,9 +23,10 @@ TParticle::TParticle(int pIndex)
 TParticle::TParticle(int pIndex, TSite pSite, int pSpin)
     : Index(pIndex), CSite(pSite), is_freeL(true), is_freeR(true), LinkedWith{-1, -1, -1, -1}, Spin(pSpin) {
   RecalcExtSites();
-  is_activeA = false;
-  is_activeB = false;
-  mob = MobState::FREE;
+  // ALL SITES ACTIVE BY NOW! (if not, must be inserted activation)
+  is_activeA = true;
+  is_activeB = true;
+  mob = MobState::BLOCKED;
 }
 
 TParticle::~TParticle() {

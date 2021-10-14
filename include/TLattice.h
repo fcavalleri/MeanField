@@ -20,8 +20,10 @@ public:
   virtual ~TLattice();
 
   //Class Members
-  //! Total number of particles
+  //! Total number of particles stored in the Parts vector
   int N;
+  //! Number of initial free particles
+  int Nfree;
   //! Number of particles in the polimer
   int Nfix;
   //! Max number of particles in the aggregate
@@ -36,11 +38,14 @@ public:
   //Class Methods
   //! Fill the Lattice whit pN Particles
   void RandomFill(int pN);
+    //! Set for a MF simulation
+    void SetForMF();
   //! Set for a DLA simulation
   void SetForDLA();
 
   //! Make a time step forwar for all the system
   bool Evolve();
+  bool EvolveMF();
 
   //! The Lattice is composed by Grid Elements made up with an int (the Index of the Particle if present) and the bool Is_Central
   //typedef mtx::small_vector<uint16_t> GridElement; // type def
@@ -64,6 +69,13 @@ private:
   //! Matrix class manage positions of particles trought their indexes
   // std::array<std::array<GridElement, TSite::Ly>, TSite::Lx> Grid;
    mtx::matrix<GridElement, TSite::Lx, TSite::Ly> Grid;
+
+  void PutParticle(int pIndex, TSite pSite, int pSpin);
+
+    //! Possibility of X coordinates translation on a triangular lattice
+    static constexpr int dx[6] = {2, 1, -1, -2, -1, 1};  //IN ORDINE!!
+    //! Possibility of Y coordinates translation on a triangular lattice
+    static constexpr int dy[6] = {0, 1, 1, 0, -1, -1};
 
 };
 

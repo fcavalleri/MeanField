@@ -3,7 +3,7 @@
 static constexpr int Lx = TSite::Lx, Ly = TSite::Ly;
 
 TLattice::TLattice() :  /*Grid(Lx, std::vector<GridElement>(Ly)),*/
-N(0), Nfix(0), nYL(0), nDL(0), OutofGrid(false) //Initialize
+N(0), Nfix(0), Nfree(0), nYL(0), nDL(0), OutofGrid(false) //Initialize
 {
   // Set static parameters for TParticle and TSite classes
   TParticle::Lattice = this; //this è il puntatore all'istanza corrente della classe
@@ -24,14 +24,28 @@ void TLattice::RandomFill(int pN) {
   }
 }
 
-/*void TLattice::AddPart(TParticle pPart)
-{
-    N++;                //Increment N by unit
-    pPart.SetParticlePosition();
-    Parts.push_back(pPart);
-}*/
+void TLattice::PutParticle(int pIndex, TSite pSite, int pSpin) {
+    TParticle x(pIndex, pSite, pSpin);        //Create a Tparticle-Type variable named x Setting x Index as current N
+    Nfix++;                //Increment N by unit
+    x.SetParticlePosition();
+    Parts.push_back(x); //Put x in the last position of vector Parts
+}
+
+void TLattice::SetForMF() {
+
+    PutParticle(0,TSite(Lx / 2, Ly / 2), 0 );
+
+    Parts[0].is_freeL = true;
+    Parts[0].is_freeR = true;
+    Parts[0].is_activeA = true;
+    Parts[0].is_activeB = true;
+    Parts[0].mob = TParticle::MobState::BLOCKED;
+
+    Parts[0].SetParticlePosition();
+}
 
 void TLattice::SetForDLA() {
+
   Parts[0].ClearParticlePosition();
 
   Parts[0].CSite.x = Lx / 2;
@@ -64,6 +78,108 @@ bool TLattice::Evolve() {
         //RandomFill(1);
     };
   }
+    return false;
+}
+
+
+bool TLattice::EvolveMF() {
+    //For N times, chose a random particle from Parts vector and Evolve it
+    for (int i = 0; i < Nfix; i++) {
+
+        int j;
+        if (Nfix==1) {j=0;} else {j=randM(Nfix);}
+
+        // Prova a chiudersi:
+        if(Parts[j].CheckClose()) Parts[j].CheckBorder();
+
+        double soglia = 0.011; //dovrebbe essere 2*(Nfree-Nfix)/(6*Lx*Ly)) ma mi dà 0. ???
+
+        // DLAs
+        if (Parts[j].LinkedWith[2]==-1 && Parts[j].LinkedWith[3]==-1 ) {
+
+            if (ranMT()<soglia) {
+                // Add a particle in the polimer
+                PutParticle(Nfix+1,Parts[j].RSite,(Parts[j].Spin+3)%6);
+                Parts[j].DLAs(Parts[Nfix+1]);
+                Nfix++;
+
+                Parts[Nfix+1].CheckBorder();
+            }
+        }
+
+        // YLA
+        if (Parts[j].LinkedWith[2]==-1) {
+
+            if (ranMT()<soglia) {
+                // Add a particle in the polimer
+                PutParticle(Nfix+1,Parts[j].CSite,(Parts[j].Spin+4)%6);
+                Parts[Nfix+1].CSite.Translate(dx[(Parts[j].Spin + 1) % 6], dy[(Parts[j].Spin + 1) % 6]);
+                Parts[Nfix+1].RecalcExtSites();
+                Parts[j].YLA(Parts[Nfix+1]);
+                Nfix++;
+
+                Parts[Nfix+1].CheckBorder();
+            }
+        }
+
+        // DLBs
+        if (Parts[j].LinkedWith[0]==-1 && Parts[j].LinkedWith[1]==-1 ) {
+
+            if (ranMT()<soglia) {
+                // Add a particle in the polimer
+                PutParticle(Nfix+1,Parts[j].LSite,(Parts[j].Spin+3)%6);
+                Parts[j].DLBs(Parts[Nfix+1]);
+                Nfix++;
+
+                Parts[Nfix+1].CheckBorder();
+            }
+        };
+
+
+        // YLB
+        if (Parts[j].LinkedWith[1]==-1) {
+
+            if (ranMT()<soglia) {
+                // Add a particle in the polimer
+                PutParticle(Nfix+1,Parts[j].CSite,(Parts[j].Spin+2)%6);
+                Parts[Nfix+1].CSite.Translate(dx[(Parts[j].Spin + 2) % 6], dy[(Parts[j].Spin + 2) % 6]);
+                Parts[Nfix+1].RecalcExtSites();
+                Parts[j].YLB(Parts[Nfix+1]);
+                Nfix++;
+
+                Parts[Nfix+1].CheckBorder();
+            }
+        };
+
+
+        // YLR
+        if (Parts[j].LinkedWith[3]==-1) {
+
+            if (ranMT()<soglia) {
+                // Add a particle in the polimer
+                PutParticle(Nfix+1,Parts[j].RSite,(Parts[j].Spin+2)%6);
+                Parts[j].YLR(Parts[Nfix+1]);
+                Nfix++;
+
+                Parts[Nfix+1].CheckBorder();
+            }
+        };
+
+        // YLL
+        if (Parts[j].LinkedWith[0]==-1) {
+
+            if (ranMT()<soglia) {
+                // Add a particle in the polimer
+                PutParticle(Nfix+1,Parts[j].LSite,(Parts[j].Spin+4)%6);
+                Parts[j].YLR(Parts[Nfix+1]);
+                Nfix++;
+
+                Parts[Nfix+1].CheckBorder();
+            }
+        };
+
+        if (Nfix > (MAX_Nfix-1) || OutofGrid) return true;
+    }
     return false;
 }
 
@@ -108,3 +224,4 @@ void TLattice::draw(sf::RenderTarget &target, sf::RenderStates states) const {
     //}
   }
 }
+
