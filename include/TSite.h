@@ -12,7 +12,7 @@ public:
 
   //Class Members
   //! Linear dimension of the grid: MUST BE MULTIPLE OF 4!!
-  static constexpr int Lx = 500, Ly = 360;
+  static constexpr int Lx = 100, Ly = 80;
 
   //! Site coordinates.
   //! Be careful: this are lattice coordinate that should be rescaled in real world by...
@@ -21,6 +21,8 @@ public:
   //Class Methods
   //! Translate a Site by dx and dy
   void Translate(int dx, int dy);
+
+  TSite GetTranslatedCSite(int dx, int dy);
 
   //!
   friend std::ostream &operator<<(std::ostream &os,

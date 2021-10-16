@@ -70,7 +70,8 @@ private:
   // std::array<std::array<GridElement, TSite::Ly>, TSite::Lx> Grid;
    mtx::matrix<GridElement, TSite::Lx, TSite::Ly> Grid;
 
-  void PutParticle(int pIndex, TSite pSite, int pSpin);
+  //! Add a particle in a specific position and spin
+    void PutParticle(TSite pSite, int pSpin);
 
     //! Possibility of X coordinates translation on a triangular lattice
     static constexpr int dx[6] = {2, 1, -1, -2, -1, 1};  //IN ORDINE!!

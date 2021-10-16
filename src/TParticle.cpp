@@ -471,7 +471,8 @@ std::ostream &operator<<(std::ostream &os, const TParticle &me) {
 }
 
 void TParticle::CheckBorder() {
- if (CSite.x < 2 || CSite.x > (Lx- 3) || CSite.y < 1 || CSite.y > (Ly-2) ) Lattice->OutofGrid=true;
+ if (CSite.x < 2 || CSite.x > (Lx- 3) || CSite.y < 1 || CSite.y > (Ly-2) )
+     Lattice->OutofGrid=true;
 }
 
 

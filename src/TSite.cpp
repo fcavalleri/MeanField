@@ -15,11 +15,17 @@ TSite::~TSite() {
 }
 
 void TSite::Translate(int dx, int dy) {
-
   x = (x + dx + Lx) % Lx;
   y = (y + dy + Ly) % Ly;
-
 }
+
+TSite  TSite::GetTranslatedCSite(int dx, int dy) {
+TSite retVal;
+    retVal.x = (x + dx + Lx) % Lx;
+    retVal.y = (y + dy + Ly) % Ly;
+return retVal;
+}
+
 
 std::ostream &operator<<(std::ostream &os, const TSite &me) {
   return os <<  me.x << "\t" << me.y;
