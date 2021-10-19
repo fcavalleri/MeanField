@@ -26,7 +26,7 @@ TParticle::TParticle(int pIndex, TSite pSite, int pSpin)
   // ALL SITES ACTIVE BY NOW! (if not, must be inserted activation)
   is_activeA = true;
   is_activeB = true;
-  mob = MobState::BLOCKED;
+  mob = MobState::FREE;
 }
 
 TParticle::~TParticle() {
@@ -40,7 +40,7 @@ bool TParticle::Evolve() {
   switch (mob) {
     case MobState::FREE: {
 
-        TryActivateAB();
+        /////////////TryActivateAB();
         ClearParticlePosition();
 
         if(FreeMove()) {
@@ -96,7 +96,8 @@ void TParticle::TryActivateAB() {
 }
 
 bool TParticle::FreeMove() {
-
+/////////////////
+return true;  // Only
   // Transalte CSite in one of the 6 neighbours Sites chosen randomly. Before check if there is the aggregate
   if (ranMT() < TRANSL_RATE) {
 
@@ -323,122 +324,123 @@ void TParticle::YLR(TParticle &other) {
 
 bool TParticle::CheckClose() {
     bool Closed= false;
-  if (!is_freeL) {
-    if (CheckCloseYLL(Lattice->GetParticle(LinkedWith[0]))) Closed=true;
-  }
-  if (!is_activeB) {
-    if (CheckCloseYLB(Lattice->GetParticle(LinkedWith[1]))) Closed=true;
-  }
-  if (!is_activeA) {
-    if (CheckCloseYLA(Lattice->GetParticle(LinkedWith[2]))) Closed=true;
-  }
-  if (!is_freeR) {
-    if (CheckCloseYLR(Lattice->GetParticle(LinkedWith[3]))) Closed=true;
-  }
-  return Closed;
+    if (!is_freeL) {
+        if (CheckCloseYLL(Lattice->GetParticle(LinkedWith[0]))) Closed=true;
+    }
+    if (!is_activeB) {
+        if (CheckCloseYLB(Lattice->GetParticle(LinkedWith[1]))) Closed=true;
+    }
+    if (!is_activeA) {
+        if (CheckCloseYLA(Lattice->GetParticle(LinkedWith[2]))) Closed=true;
+    }
+    if (!is_freeR) {
+        if (CheckCloseYLR(Lattice->GetParticle(LinkedWith[3]))) Closed=true;
+    }
+    return Closed;
 }
 
 bool TParticle::CheckCloseYLL(TParticle &pPart) {
-  if (!is_activeB || !pPart.is_freeL) return false;
-  if (ranMT() > CLO_TRESH) return false;
+    if (!is_activeB || !pPart.is_freeL) return false;
+    if (ranMT() > CLO_TRESH) return false;
 
-  ClearParticlePosition();
+    ClearParticlePosition();
 
-  CSite.Translate(dx[(Spin + 2) % 6], dy[(Spin + 2) % 6]);
-  Spin = (Spin + 1) % 6;
-  RecalcExtSites();
-  is_activeB = false;
-  LinkedWith[1] = pPart.Index;
-  pPart.is_freeL = false;
-  pPart.LinkedWith[0] = Index;
-  mob = MobState::BLOCKED;
-  pPart.mob = MobState::BLOCKED;
+    CSite.Translate(dx[(Spin + 2) % 6], dy[(Spin + 2) % 6]);
+    Spin = (Spin + 1) % 6;
+    RecalcExtSites();
+    is_activeB = false;
+    LinkedWith[1] = pPart.Index;
+    pPart.is_freeL = false;
+    pPart.LinkedWith[0] = Index;
+    mob = MobState::BLOCKED;
+    pPart.mob = MobState::BLOCKED;
 
-  SetParticlePosition();
+    SetParticlePosition();
 
-  Lattice->nYL--;
-  Lattice->nDL++;
+    Lattice->nYL--;
+    Lattice->nDL++;
 #if PARTICLE_LOGGING
-  std::cout << "Closing! Of " << *this << " over " << pPart << std::endl;
+    std::cout << "Closing! Of " << *this << " over " << pPart << std::endl;
 #endif
-  return true;
+    return true;
 }
 
 bool TParticle::CheckCloseYLB(TParticle &pPart) {
-  if (!is_freeL || !pPart.is_activeB) return false;
-  if (ranMT() > CLO_TRESH) return false;
+    if (!is_freeL || !pPart.is_activeB) return false;
+    if (ranMT() > CLO_TRESH) return false;
 
-  ClearParticlePosition();
+    ClearParticlePosition();
 
-  Spin = (Spin - 1 + 6) % 6;
-  RecalcExtSites();
-  is_freeL = false;
-  LinkedWith[0] = pPart.Index;
-  pPart.is_activeB = false;
-  pPart.LinkedWith[1] = Index;
-  mob = MobState::BLOCKED;
-  pPart.mob = MobState::BLOCKED;
+    Spin = (Spin - 1 + 6) % 6;
+    RecalcExtSites();
+    is_freeL = false;
+    LinkedWith[0] = pPart.Index;
+    pPart.is_activeB = false;
+    pPart.LinkedWith[1] = Index;
+    mob = MobState::BLOCKED;
+    pPart.mob = MobState::BLOCKED;
 
-  SetParticlePosition();
+    SetParticlePosition();
 
-  Lattice->nYL--;
-  Lattice->nDL++;
+    Lattice->nYL--;
+    Lattice->nDL++;
 #if PARTICLE_LOGGING
-  std::cout << "Closing! Of " << *this << " over " << pPart << std::endl;
+    std::cout << "Closing! Of " << *this << " over " << pPart << std::endl;
 #endif
-  return true;
+    return true;
 }
 
 bool TParticle::CheckCloseYLA(TParticle &pPart) {
-  if (!is_freeR || !pPart.is_activeA) return false;
-  if (ranMT() > CLO_TRESH) return false;
+    if (!is_freeR || !pPart.is_activeA) return false;
+    if (ranMT() > CLO_TRESH) return false;
 
-  ClearParticlePosition();
+    ClearParticlePosition();
 
-  Spin = (Spin + 1) % 6;
-  RecalcExtSites();
-  is_freeR = false;
-  LinkedWith[3] = pPart.Index;
-  pPart.is_activeA = false;
-  pPart.LinkedWith[2] = Index;
-  mob = MobState::BLOCKED;
-  pPart.mob = MobState::BLOCKED;
+    Spin = (Spin + 1) % 6;
+    RecalcExtSites();
+    is_freeR = false;
+    LinkedWith[3] = pPart.Index;
+    pPart.is_activeA = false;
+    pPart.LinkedWith[2] = Index;
+    mob = MobState::BLOCKED;
+    pPart.mob = MobState::BLOCKED;
 
-  SetParticlePosition();
+    SetParticlePosition();
 
-  Lattice->nYL--;
-  Lattice->nDL++;
+    Lattice->nYL--;
+    Lattice->nDL++;
 #if PARTICLE_LOGGING
-  std::cout << "Closing! Of " << *this << " over " << pPart << std::endl;
+    std::cout << "Closing! Of " << *this << " over " << pPart << std::endl;
 #endif
-  return true;
+    return true;
 }
 
 bool TParticle::CheckCloseYLR(TParticle &pPart) {
-  if (!is_activeA || !pPart.is_freeR) return false;  //first check if there are closing conditions
-  if (ranMT() > CLO_TRESH) return false; //if there are, close with a rate CLO_RATE
+    if (!is_activeA || !pPart.is_freeR) return false;  //first check if there are closing conditions
+    if (ranMT() > CLO_TRESH) return false; //if there are, close with a rate CLO_RATE
 
-  ClearParticlePosition();
+    ClearParticlePosition();
 
-  CSite.Translate(dx[(Spin + 1) % 6], dy[(Spin + 1) % 6]);
-  Spin = (Spin - 1 + 6) % 6;
-  RecalcExtSites();
-  is_activeA = false;
-  LinkedWith[2] = pPart.Index;
-  pPart.is_freeR = false;
-  pPart.LinkedWith[3] = Index;
-  mob = MobState::BLOCKED;
-  pPart.mob = MobState::BLOCKED;
+    CSite.Translate(dx[(Spin + 1) % 6], dy[(Spin + 1) % 6]);
+    Spin = (Spin - 1 + 6) % 6;
+    RecalcExtSites();
+    is_activeA = false;
+    LinkedWith[2] = pPart.Index;
+    pPart.is_freeR = false;
+    pPart.LinkedWith[3] = Index;
+    mob = MobState::BLOCKED;
+    pPart.mob = MobState::BLOCKED;
 
-  SetParticlePosition();
+    SetParticlePosition();
 
-  Lattice->nYL--;
-  Lattice->nDL++;
+    Lattice->nYL--;
+    Lattice->nDL++;
 #if PARTICLE_LOGGING
-  std::cout << "Closing! Of " << *this << " over " << pPart << std::endl;
+    std::cout << "Closing! Of " << *this << " over " << pPart << std::endl;
 #endif
-  return true;
+    return true;
 }
+
 
 void TParticle::SetParticlePosition() {
 //Set Site by Site through the pointer at the shared Lattice

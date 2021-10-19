@@ -16,13 +16,13 @@ const std::string currentDateTime();
 namespace parameters {
 // Define system parameters
 
-    static int N_PART = 200;
+    static int N_PART = 2000;
     static constexpr int GRID_LEN_X = TSite::Lx;
     static constexpr int GRID_LEN_Y = TSite::Ly;
 
     static constexpr int T_MAX = 100000;
-    static constexpr int N_FIX_MAX = 100;
-    static constexpr int MSEC_WAIT = 0;
+    static constexpr int N_FIX_MAX = 250;
+    static constexpr int MSEC_WAIT = 10;
     static constexpr int VIEW = 1; //visualize every VIEW time steps. FOR REAL TIME SET TO 1
 
 #define DISPLAY_SIMULATION true
@@ -131,7 +131,7 @@ int main(int argc, char*argv[]) {
     for (int t : tq::trange(T_MAX)) {
 
         // Ask the Lattice to Evolve all the System by a time step
-        if (Lattice.EvolveMF()) {     // Is true when simulations must stop
+        if (Lattice.EvolveMF2()) {     // Is true when simulations must stop
             outputP << "Total time of simulation: " << t * 0.00001 << " s (" << t << " steps) \n" <<
                     "Number of monomers in the aggregate: " << Lattice.Nfix;
 

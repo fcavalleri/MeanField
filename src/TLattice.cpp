@@ -82,6 +82,96 @@ bool TLattice::Evolve() {
 }
 
 
+bool TLattice::EvolveMF2() {
+
+    bool result=true;
+    for (int i = 0; i < Nfix; i++) {
+
+        int j;  //Indice particella su cui simulare un nuovo attacco o chiusura
+        if (Nfix == 1) { j = 0; } else { j = randM(Nfix); }
+        //Crea nuova particella
+        if (Parts[j].Evolve()) if (Nfix > (MAX_Nfix-1) || OutofGrid) return true;
+
+        std::vector<int> IndexCreatedParticles;
+        // DLAs
+        if (Parts[j].LinkedWith[2] == -1 && Parts[j].LinkedWith[3] == -1) {
+
+            if (ranMT() < 2 * (double) (Nfree - Nfix) / (6 * Lx * Ly)) {
+                // Add a particle in the polimer
+                PutParticle(Parts[j].RSite, (Parts[j].Spin + 3) % 6);
+                IndexCreatedParticles.push_back(Nfix - 1);
+                Parts[Nfix-1].Evolve();
+            }
+        }
+
+        // YLA
+        if (Parts[j].LinkedWith[2] == -1) {
+
+            if (ranMT() < 2 * (double) (Nfree - Nfix) / (6 * Lx * Ly)) {
+                // Add a particle in the polimer
+                PutParticle(Parts[j].CSite.GetTranslatedCSite(dx[(Parts[j].Spin + 1) % 6], dy[(Parts[j].Spin + 1) % 6]),
+                            (Parts[j].Spin + 4) % 6);
+                IndexCreatedParticles.push_back(Nfix - 1);
+                Parts[Nfix-1].Evolve();
+            }
+        }
+
+        // DLBs
+        if (Parts[j].LinkedWith[0] == -1 && Parts[j].LinkedWith[1] == -1) {
+
+            if (ranMT() < 2 * (double) (Nfree - Nfix) / (6 * Lx * Ly)) {
+                // Add a particle in the polimer
+                PutParticle(Parts[j].LSite, (Parts[j].Spin + 3) % 6);
+                IndexCreatedParticles.push_back(Nfix - 1);
+                Parts[Nfix-1].Evolve();
+            }
+        };
+
+
+        // YLB
+        if (Parts[j].LinkedWith[1] == -1) {
+
+            if (ranMT() < 2 * (double) (Nfree - Nfix) / (6 * Lx * Ly)) {
+                // Add a particle in the polimer
+                PutParticle(Parts[j].CSite.GetTranslatedCSite(dx[(Parts[j].Spin + 2) % 6], dy[(Parts[j].Spin + 2) % 6]),
+                            (Parts[j].Spin + 2) % 6);
+                IndexCreatedParticles.push_back(Nfix - 1);
+                Parts[Nfix-1].Evolve();
+            }
+        };
+
+        // YLR
+        if (Parts[j].LinkedWith[3] == -1) {
+
+            if (ranMT() < 2 * (double) (Nfree - Nfix) / (6 * Lx * Ly)) {
+                // Add a particle in the polimer
+                PutParticle(Parts[j].RSite, (Parts[j].Spin + 2) % 6);
+                IndexCreatedParticles.push_back(Nfix - 1);
+                Parts[Nfix-1].Evolve();
+            }
+        };
+
+        // YLL
+        if (Parts[j].LinkedWith[0] == -1) {
+
+            if (ranMT() < 2 * (double) (Nfree - Nfix) / (6 * Lx * Ly)) {
+                // Add a particle in the polimer
+                PutParticle(Parts[j].LSite, (Parts[j].Spin + 4) % 6);
+                IndexCreatedParticles.push_back(Nfix - 1);
+                Parts[Nfix-1].Evolve();
+            }
+        };
+
+        for (int i : IndexCreatedParticles)
+            if (Parts[i].mob == TParticle::MobState::FREE)
+                std::cout << "WRONGCONDITION!\n";
+    }
+    if (Nfix > (MAX_Nfix-1) || OutofGrid) return true;
+
+    //se particella Nfix
+        return false;
+}
+
 bool TLattice::EvolveMF() {
     //For N times, chose a random particle from Parts vector and Evolve it
     for (int i = 0; i < Nfix; i++) {
@@ -90,12 +180,16 @@ bool TLattice::EvolveMF() {
         if (Nfix==1) {j=0;} else {j=randM(Nfix);}
 
         // Prova a chiudersi:
-        if (Parts[j].mob==TParticle::MobState::LINKED)
+       if (Parts[j].mob==TParticle::MobState::LINKED) {
 
-            if (Parts[j].CheckClose()) Parts[j].CheckBorder();
+            if (Parts[j].CheckClose()) {
+                Parts[j].CheckBorder();
+                break;
+            }
+        }
 
-        // DLAs
-        /*if (Parts[j].LinkedWith[2]==-1 && Parts[j].LinkedWith[3]==-1 ) {
+ /*       // DLAs
+        if (Parts[j].LinkedWith[2]==-1 && Parts[j].LinkedWith[3]==-1 ) {
 
             if (ranMT()<2*(double)(Nfree-Nfix)/(6*Lx*Ly)) {
                 // Add a particle in the polimer
@@ -137,8 +231,8 @@ bool TLattice::EvolveMF() {
                 Parts[Nfix-1].YLB(Parts[j]);
                 Parts[Nfix-1].CheckBorder();
             }
-        };*/
-
+        };
+*/
 
         // YLR
         if (Parts[j].LinkedWith[3]==-1) {
@@ -152,7 +246,7 @@ bool TLattice::EvolveMF() {
         };
 
         // YLL
-        /*if (Parts[j].LinkedWith[0]==-1) {
+        if (Parts[j].LinkedWith[0]==-1) {
 
             if (ranMT()<2*(double)(Nfree-Nfix)/(6*Lx*Ly)) {
                 // Add a particle in the polimer
@@ -160,7 +254,7 @@ bool TLattice::EvolveMF() {
                 Parts[Nfix-1].YLL(Parts[j]);
                 Parts[Nfix-1].CheckBorder();
             }
-        };*/
+        };
 
         if (Nfix > (MAX_Nfix-1) || OutofGrid) return true;
     }
