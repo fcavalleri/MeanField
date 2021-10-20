@@ -20,10 +20,10 @@ namespace parameters {
     static constexpr int GRID_LEN_X = TSite::Lx;
     static constexpr int GRID_LEN_Y = TSite::Ly;
 
-    static constexpr int T_MAX = 100000;
-    static constexpr int N_FIX_MAX = 250;
-    static constexpr int MSEC_WAIT = 10;
-    static constexpr int VIEW = 1; //visualize every VIEW time steps. FOR REAL TIME SET TO 1
+    static constexpr int T_MAX = 220000;
+    static constexpr int N_FIX_MAX = 10000;
+    static constexpr int MSEC_WAIT = 0;
+    static constexpr int VIEW = 500; //visualize every VIEW time steps. FOR REAL TIME SET TO 1
 
 #define DISPLAY_SIMULATION true
 
@@ -141,7 +141,8 @@ int main(int argc, char*argv[]) {
                 }
             }
 
-            return 0;
+            //return 0;
+            break; //waits showing image...
         }
 
         //Visualize Lattice every VIEW steps

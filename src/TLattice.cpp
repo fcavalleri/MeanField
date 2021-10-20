@@ -84,15 +84,21 @@ bool TLattice::Evolve() {
 
 bool TLattice::EvolveMF2() {
 
+    // Tengo gli indici dei nuovi monomeri creati:
+    std::vector<int> IndexCreatedParticles;
+
     bool result=true;
     for (int i = 0; i < Nfix; i++) {
 
         int j;  //Indice particella su cui simulare un nuovo attacco o chiusura
         if (Nfix == 1) { j = 0; } else { j = randM(Nfix); }
-        //Crea nuova particella
-        if (Parts[j].Evolve()) if (Nfix > (MAX_Nfix-1) || OutofGrid) return true;
 
-        std::vector<int> IndexCreatedParticles;
+        // Evolvo con il metodo già costruito: se BLOCKED non succede niente, se LINKED prova a chiudersi.
+        if (Parts[j].Evolve()) if (Nfix > (MAX_Nfix-1) || OutofGrid) return true;  // se si chiude controlla la griglia
+
+        // Provo a vedere se ci sono le condizioni per creare ed attaccare un nuovo monomero:
+        // Ci sono 6 modi diversi in cui si può attaccare un nuovo monomero: li testo tutti
+
         // DLAs
         if (Parts[j].LinkedWith[2] == -1 && Parts[j].LinkedWith[3] == -1) {
 
@@ -162,13 +168,13 @@ bool TLattice::EvolveMF2() {
             }
         };
 
-        for (int i : IndexCreatedParticles)
-            if (Parts[i].mob == TParticle::MobState::FREE)
-                std::cout << "WRONGCONDITION!\n";
     }
     if (Nfix > (MAX_Nfix-1) || OutofGrid) return true;
 
-    //se particella Nfix
+    for (int i : IndexCreatedParticles)
+        if (Parts[i].mob == TParticle::MobState::FREE)
+           std::cout << "WRONGCONDITION!\n";
+
         return false;
 }
 
