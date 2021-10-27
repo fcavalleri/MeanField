@@ -169,6 +169,7 @@ bool TLattice::EvolveMF2() {
         };
 
     }
+
     if (Nfix > (MAX_Nfix-1) || OutofGrid) return true;
 
     for (int i : IndexCreatedParticles)

@@ -16,7 +16,7 @@ const std::string currentDateTime();
 namespace parameters {
 // Define system parameters
 
-    static int N_PART = 2000;
+    static int N_PART = 20000;
     static constexpr int GRID_LEN_X = TSite::Lx;
     static constexpr int GRID_LEN_Y = TSite::Ly;
 
@@ -25,7 +25,7 @@ namespace parameters {
     static constexpr int MSEC_WAIT = 0;
     static constexpr int VIEW = 500; //visualize every VIEW time steps. FOR REAL TIME SET TO 1
 
-#define DISPLAY_SIMULATION true
+#define DISPLAY_SIMULATION false
 
     static constexpr double ZY_ROT_RATE = 1;
     static constexpr double X_ROT_RATE = 0.66;
@@ -33,8 +33,8 @@ namespace parameters {
 
     static constexpr double LEN_WIDHT_RATIO = 0.3;
 
-    static constexpr double ACT_TRESH = 0.0012;
-    static double CLO_TRESH = 0.3;
+    static constexpr double ACT_TRESH = 1;
+    static double CLO_TRESH = 0.1;
     static constexpr double DL2YL_RATE = 0;
 
 }
@@ -141,8 +141,8 @@ int main(int argc, char*argv[]) {
                 }
             }
 
-            //return 0;
-            break; //waits showing image...
+            return 0;
+            //break; //waits showing image...
         }
 
         //Visualize Lattice every VIEW steps
