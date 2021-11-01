@@ -21,7 +21,7 @@ namespace parameters {
     static constexpr int GRID_LEN_Y = TSite::Ly;
 
     static constexpr int T_MAX = 220000;
-    static constexpr int N_FIX_MAX = 50;
+    static constexpr int N_FIX_MAX = 100;
     static constexpr int MSEC_WAIT = 5;
     static constexpr int VIEW = 1; //visualize every VIEW time steps. FOR REAL TIME SET TO 1
 
@@ -33,7 +33,7 @@ namespace parameters {
 
     static constexpr double LEN_WIDHT_RATIO = 0.3;
 
-    static constexpr double ACT_TRESH = 0.0001;
+    static constexpr double ACT_TRESH = 0.01;
     static double CLO_TRESH = 0.1;
     static constexpr double DL2YL_RATE = 0;
 

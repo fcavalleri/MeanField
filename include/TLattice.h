@@ -30,6 +30,8 @@ public:
   int Na;
   //! Number of passive free particles
   int Np;
+  //! Fraction of activated particle: when overcomes 1, one particle is activated.
+  double Activating;
   //! Max number of particles in the aggregate
   inline static int MAX_Nfix;
   //! Threshold for central sites activation
@@ -83,6 +85,9 @@ private:
     static constexpr int dx[6] = {2, 1, -1, -2, -1, 1};  //IN ORDINE!!
     //! Possibility of Y coordinates translation on a triangular lattice
     static constexpr int dy[6] = {0, 1, 1, 0, -1, -1};
+
+    //! Calculate probability to get a free monomer with active central sites
+    double probAct();
 
 };
 
