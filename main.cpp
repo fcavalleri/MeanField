@@ -16,16 +16,16 @@ const std::string currentDateTime();
 namespace parameters {
 // Define system parameters
 
-    static int N_PART = 20000;
+    static int N_PART = 300;
     static constexpr int GRID_LEN_X = TSite::Lx;
     static constexpr int GRID_LEN_Y = TSite::Ly;
 
     static constexpr int T_MAX = 220000;
-    static constexpr int N_FIX_MAX = 10000;
-    static constexpr int MSEC_WAIT = 0;
-    static constexpr int VIEW = 500; //visualize every VIEW time steps. FOR REAL TIME SET TO 1
+    static constexpr int N_FIX_MAX = 50;
+    static constexpr int MSEC_WAIT = 5;
+    static constexpr int VIEW = 1; //visualize every VIEW time steps. FOR REAL TIME SET TO 1
 
-#define DISPLAY_SIMULATION false
+#define DISPLAY_SIMULATION true
 
     static constexpr double ZY_ROT_RATE = 1;
     static constexpr double X_ROT_RATE = 0.66;
@@ -33,7 +33,7 @@ namespace parameters {
 
     static constexpr double LEN_WIDHT_RATIO = 0.3;
 
-    static constexpr double ACT_TRESH = 1;
+    static constexpr double ACT_TRESH = 0.0001;
     static double CLO_TRESH = 0.1;
     static constexpr double DL2YL_RATE = 0;
 
@@ -113,6 +113,7 @@ int main(int argc, char*argv[]) {
 
 // Set a limit for simulation
     TLattice::MAX_Nfix=N_FIX_MAX;
+    TLattice::act = ACT_TRESH;
 
     // Set number of free particles
     Lattice.Nfree=N_PART;

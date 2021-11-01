@@ -26,8 +26,14 @@ public:
   int Nfree;
   //! Number of particles in the polimer
   int Nfix;
+  //! Number of active free particles
+  int Na;
+  //! Number of passive free particles
+  int Np;
   //! Max number of particles in the aggregate
   inline static int MAX_Nfix;
+  //! Threshold for central sites activation
+  inline static double act;
   //! True if a particles of the aggregates is on the border
   bool OutofGrid;
   //! The Lattice own as a member the vector of All Parts

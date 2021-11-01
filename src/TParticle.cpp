@@ -24,8 +24,8 @@ TParticle::TParticle(int pIndex, TSite pSite, int pSpin)
     : Index(pIndex), CSite(pSite), is_freeL(true), is_freeR(true), LinkedWith{-1, -1, -1, -1}, Spin(pSpin) {
   RecalcExtSites();
   // ALL SITES ACTIVE BY NOW! (if not, must be inserted activation)
-  is_activeA = true;
-  is_activeB = true;
+  is_activeA = false;
+  is_activeB = false;
   mob = MobState::FREE;
 }
 
@@ -37,10 +37,11 @@ bool TParticle::Evolve() {
 
   bool JustJoined = false;
 
-  switch (mob) {
+    TryActivateAB();
+
+    switch (mob) {
     case MobState::FREE: {
 
-        /////////////TryActivateAB();
         ClearParticlePosition();
 
         if(FreeMove()) {
@@ -77,7 +78,6 @@ bool TParticle::Evolve() {
     }
 
     case MobState::LINKED: {
-      if (LinkedWith[1] == -1 && LinkedWith[2] == -1) TryActivateAB();
       if(CheckClose()) CheckBorder();
       break;
     }
@@ -88,11 +88,15 @@ bool TParticle::Evolve() {
   return JustJoined;
 }
 
+
 void TParticle::TryActivateAB() {
-  if (ranMT() > ACT_TRESH) {
-    is_activeA = true;
-    is_activeB = true;
-  }
+    if (is_activeA || is_activeB) return;   // se i siti sono già stati attivati non procedo.
+    if (LinkedWith[1]!=-1 || LinkedWith[2]!=-1) return;   // se almeno un sito è già coinvolto in un legame, non procedo.
+
+    if (ranMT() < ACT_TRESH) {
+        is_activeA = true;
+        is_activeB = true;
+    }
 }
 
 bool TParticle::FreeMove() {
@@ -324,16 +328,16 @@ void TParticle::YLR(TParticle &other) {
 
 bool TParticle::CheckClose() {
     bool Closed= false;
-    if (!is_freeL) {
+    if (LinkedWith[0]!=-1) {
         if (CheckCloseYLL(Lattice->GetParticle(LinkedWith[0]))) Closed=true;
     }
-    if (!is_activeB) {
+    if (LinkedWith[1]!=-1) {
         if (CheckCloseYLB(Lattice->GetParticle(LinkedWith[1]))) Closed=true;
     }
-    if (!is_activeA) {
+    if (LinkedWith[2]!=-1) {
         if (CheckCloseYLA(Lattice->GetParticle(LinkedWith[2]))) Closed=true;
     }
-    if (!is_freeR) {
+    if (LinkedWith[3]!=-1) {
         if (CheckCloseYLR(Lattice->GetParticle(LinkedWith[3]))) Closed=true;
     }
     return Closed;
