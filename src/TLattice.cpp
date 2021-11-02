@@ -95,7 +95,9 @@ bool TLattice::EvolveMF2() {
     // Calcolo la probabilità di estrarre un monomero libero con i siti centrali attivi
     double pA = probAct();
 
-        for (int i = 0; i < Nfix; i++) {
+    int NfixMemory = Nfix;  // per evitare che la condizione di ciclo fos si sposti aggiornando Nfix
+
+        for (int i = 0; i < NfixMemory; i++) {
 
             int j;  //Indice particella su cui simulare un nuovo attacco o chiusura
             if (Nfix == 1) { j = 0; } else { j = randM(Nfix); }
@@ -106,12 +108,13 @@ bool TLattice::EvolveMF2() {
                     return true;  // se si chiude controlla la griglia
 
             // Provo a vedere se ci sono le condizioni per creare ed attaccare un nuovo monomero:
+
             if (ranMT() < pA) { // nuovo possibile monomero Attivo (siti centrali già attivati)
 
                 // Ci sono 6 modi diversi in cui si può attaccare un nuovo monomero con i siti A e B attivi: li testo tutti
 
                 // DLAs
-                if (Parts[j].LinkedWith[2] == -1 && Parts[j].LinkedWith[3] == -1) {
+                if (Parts[j].LinkedWith[2] == -1 && Parts[j].LinkedWith[3] == -1 && Parts[j].is_activeA) {
 
                     if (ranMT() < 2 * (double) (Nfree - Nfix) / (6 * Lx * Ly)) {
                         // Add a particle in the polimer
@@ -119,12 +122,12 @@ bool TLattice::EvolveMF2() {
                         IndexCreatedParticles.push_back(Nfix - 1);
                         Parts[Nfix - 1].is_activeA = true;
                         Parts[Nfix - 1].is_activeB = true;
-                        Parts[Nfix - 1].Evolve();
+                        if (!Parts[Nfix - 1].Evolve()) throw std::runtime_error("Error:");
                     }
                 }
 
                 // YLA
-                if (Parts[j].LinkedWith[2] == -1) {
+                if (Parts[j].LinkedWith[2] == -1 && Parts[j].is_activeA) {
 
                     if (ranMT() < 2 * (double) (Nfree - Nfix) / (6 * Lx * Ly)) {
                         // Add a particle in the polimer
@@ -135,12 +138,12 @@ bool TLattice::EvolveMF2() {
                         IndexCreatedParticles.push_back(Nfix - 1);
                         Parts[Nfix - 1].is_activeA = true;
                         Parts[Nfix - 1].is_activeB = true;
-                        Parts[Nfix - 1].Evolve();
+                        if (!Parts[Nfix - 1].Evolve()) throw std::runtime_error("Error:");
                     }
                 }
 
                 // DLBs
-                if (Parts[j].LinkedWith[0] == -1 && Parts[j].LinkedWith[1] == -1) {
+                if (Parts[j].LinkedWith[0] == -1 && Parts[j].LinkedWith[1] == -1 && Parts[j].is_activeB) {
 
                     if (ranMT() < 2 * (double) (Nfree - Nfix) / (6 * Lx * Ly)) {
                         // Add a particle in the polimer
@@ -148,13 +151,13 @@ bool TLattice::EvolveMF2() {
                         IndexCreatedParticles.push_back(Nfix - 1);
                         Parts[Nfix - 1].is_activeA = true;
                         Parts[Nfix - 1].is_activeB = true;
-                        Parts[Nfix - 1].Evolve();
+                        if (!Parts[Nfix - 1].Evolve()) throw std::runtime_error("Error:");
                     }
                 };
 
 
                 // YLB
-                if (Parts[j].LinkedWith[1] == -1) {
+                if (Parts[j].LinkedWith[1] == -1 && Parts[j].is_activeB) {
 
                     if (ranMT() < 2 * (double) (Nfree - Nfix) / (6 * Lx * Ly)) {
                         // Add a particle in the polimer
@@ -165,7 +168,7 @@ bool TLattice::EvolveMF2() {
                         IndexCreatedParticles.push_back(Nfix - 1);
                         Parts[Nfix - 1].is_activeA = true;
                         Parts[Nfix - 1].is_activeB = true;
-                        Parts[Nfix - 1].Evolve();
+                        if (!Parts[Nfix - 1].Evolve()) throw std::runtime_error("Error:");
                     }
                 };
 
@@ -178,7 +181,7 @@ bool TLattice::EvolveMF2() {
                         IndexCreatedParticles.push_back(Nfix - 1);
                         Parts[Nfix - 1].is_activeA = true;
                         Parts[Nfix - 1].is_activeB = true;
-                        Parts[Nfix - 1].Evolve();
+                        if (!Parts[Nfix - 1].Evolve()) throw std::runtime_error("Error:");
                     }
                 };
 
@@ -191,7 +194,7 @@ bool TLattice::EvolveMF2() {
                         IndexCreatedParticles.push_back(Nfix - 1);
                         Parts[Nfix - 1].is_activeA = true;
                         Parts[Nfix - 1].is_activeB = true;
-                        Parts[Nfix - 1].Evolve();
+                        if (!Parts[Nfix - 1].Evolve()) throw std::runtime_error("Error:");
                     }
                 };
 
@@ -200,7 +203,7 @@ bool TLattice::EvolveMF2() {
                 // Ci sono solo 2 modi diversi in cui si può attaccare un nuovo monomero passivo:
 
                 // YLA
-                if (Parts[j].LinkedWith[2] == -1) {
+                if (Parts[j].LinkedWith[2] == -1 && Parts[j].is_activeA ) {
 
                     if (ranMT() < 2 * (double) (Nfree - Nfix) / (6 * Lx * Ly)) {
                         // Add a particle in the polimer
@@ -209,12 +212,12 @@ bool TLattice::EvolveMF2() {
                                                                   dy[(Parts[j].Spin + 1) % 6]),
                                 (Parts[j].Spin + 4) % 6);
                         IndexCreatedParticles.push_back(Nfix - 1);
-                        Parts[Nfix - 1].Evolve();
+                        if (!Parts[Nfix - 1].Evolve()) throw std::runtime_error("Error:");
                     }
                 }
 
                 // YLB
-                if (Parts[j].LinkedWith[1] == -1) {
+                if (Parts[j].LinkedWith[1] == -1 && Parts[j].is_activeB) {
 
                     if (ranMT() < 2 * (double) (Nfree - Nfix) / (6 * Lx * Ly)) {
                         // Add a particle in the polimer
@@ -223,7 +226,7 @@ bool TLattice::EvolveMF2() {
                                                                   dy[(Parts[j].Spin + 2) % 6]),
                                 (Parts[j].Spin + 2) % 6);
                         IndexCreatedParticles.push_back(Nfix - 1);
-                        Parts[Nfix - 1].Evolve();
+                        if (!Parts[Nfix - 1].Evolve()) throw std::runtime_error("Error:");
                     }
                 }
 
@@ -236,7 +239,8 @@ bool TLattice::EvolveMF2() {
     for (int i : IndexCreatedParticles)
         if (Parts[i].mob == TParticle::MobState::FREE)
            std::cout << "WRONGCONDITION!\n";
-
+            // arrivano sempre particelle con i siti centrali attivati!! qualcosa non va.
+            // ne arrivano anche senza passare dal caso di particelle inattive (gli altri breakpoints)
         return false;
 }
 
@@ -388,6 +392,8 @@ double TLattice::probAct() {
 
     // Probabilità di estrarre un monomero libero già attivo
 
-    return pA = Na / Nfree;
+    return pA = double(Na) / (Nfree);
+
+    // TODO: conteggiare solo le particelle FREE
 }
 

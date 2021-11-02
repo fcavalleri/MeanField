@@ -37,7 +37,7 @@ bool TParticle::Evolve() {
 
   bool JustJoined = false;
 
-    TryActivateAB();
+//    TryActivateAB();   // specifico per modello cinetico
 
     switch (mob) {
     case MobState::FREE: {
@@ -78,6 +78,8 @@ bool TParticle::Evolve() {
     }
 
     case MobState::LINKED: {
+        // attivazione specifica per modello MF
+        TryActivateAB();
       if(CheckClose()) CheckBorder();
       break;
     }

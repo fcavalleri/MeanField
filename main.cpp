@@ -33,7 +33,7 @@ namespace parameters {
 
     static constexpr double LEN_WIDHT_RATIO = 0.3;
 
-    static constexpr double ACT_TRESH = 0.01;
+    static constexpr double ACT_TRESH = 0.0001;
     static double CLO_TRESH = 0.1;
     static constexpr double DL2YL_RATE = 0;
 
