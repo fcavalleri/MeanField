@@ -16,16 +16,16 @@ const std::string currentDateTime();
 namespace parameters {
 // Define system parameters
 
-    static int N_PART = 300;
+    static int N_PART = 26500;
     static constexpr int GRID_LEN_X = TSite::Lx;
     static constexpr int GRID_LEN_Y = TSite::Ly;
 
     static constexpr int T_MAX = 220000;
-    static constexpr int N_FIX_MAX = 100;
-    static constexpr int MSEC_WAIT = 5;
-    static constexpr int VIEW = 1; //visualize every VIEW time steps. FOR REAL TIME SET TO 1
+    static constexpr int N_FIX_MAX = 10000;
+    static constexpr int MSEC_WAIT = 0;
+    static constexpr int VIEW = 1000; //visualize every VIEW time steps. FOR REAL TIME SET TO 1
 
-#define DISPLAY_SIMULATION true
+#define DISPLAY_SIMULATION false
 
     static constexpr double ZY_ROT_RATE = 1;
     static constexpr double X_ROT_RATE = 0.66;
@@ -33,8 +33,8 @@ namespace parameters {
 
     static constexpr double LEN_WIDHT_RATIO = 0.3;
 
-    static constexpr double ACT_TRESH = 0.0001;
-    static double CLO_TRESH = 0.1;
+    static double ACT_TRESH = 1;
+    static double CLO_TRESH = 0.6;
     static constexpr double DL2YL_RATE = 0;
 
 }
@@ -45,6 +45,7 @@ int main(int argc, char*argv[]) {
     // Files where save analysis
 
     std::string strCLO_TRESH = "";
+    std::string strACT_TRESH = "";
     std::string iteration = {};
 
     if (argc>=2) {
@@ -58,6 +59,11 @@ int main(int argc, char*argv[]) {
 
     if (argc>=4) {
         iteration =std::string(argv[3]);
+    }
+
+    if (argc>=5) {
+        strACT_TRESH = std::string(argv[4]);
+        ACT_TRESH = std::stod(strACT_TRESH);
     }
 
     std::string rawdataP("RawDataParameters_");

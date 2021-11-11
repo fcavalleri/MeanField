@@ -390,6 +390,7 @@ double TLattice::probAct() {
     // Accumulo in fattore restante per i successivi incrementi
     Activating -= IntActivating;
 
+    // TODO: aggiungere un'ulteriore particella in maniera probabilistica in base all'Activating restante
     // Probabilità di estrarre un monomero libero già attivo
 
     return pA = double(Na) / (Nfree);
