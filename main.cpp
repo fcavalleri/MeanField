@@ -20,10 +20,10 @@ namespace parameters {
     static constexpr int GRID_LEN_X = TSite::Lx;
     static constexpr int GRID_LEN_Y = TSite::Ly;
 
-    static constexpr int T_MAX = 220000;
-    static constexpr int N_FIX_MAX = 10000;
+    static constexpr int T_MAX = 350000; //35000 to mass averaging without inhibition
+    static constexpr int N_FIX_MAX = 15000;
     static constexpr int MSEC_WAIT = 0;
-    static constexpr int VIEW = 1000; //visualize every VIEW time steps. FOR REAL TIME SET TO 1
+    static constexpr int VIEW = 10000; //visualize every VIEW time steps. FOR REAL TIME SET TO 1
 
 #define DISPLAY_SIMULATION false
 
@@ -97,6 +97,10 @@ int main(int argc, char*argv[]) {
     std::string fincor("FinalCoord_");
     fincor.append(iteration).append("_N=").append(std::to_string(N_PART)).append("_").append(strCLO_TRESH).append(".txt");
     std::ofstream finoutput(fincor);
+
+    std::string debye("DebyeScattering_");
+    debye.append(iteration).append("_N=").append(std::to_string(N_PART)).append("_cl=").append(strCLO_TRESH).append(".txt");
+    std::ofstream outputDB(debye);
 
 #if DISPLAY_SIMULATION
     // Create the Render Window
@@ -203,9 +207,25 @@ int main(int argc, char*argv[]) {
     outputP << "Total time of simulation: " << T_MAX * 0.00001 << " s (" << T_MAX << " steps) \n" <<
             "Number of monomers in the aggregate: " << Lattice.Nfix;
 
+    double factor = 0;  // per il calcolo di debye
+
     for (auto i : Lattice.Parts) {
         if (i.mob != TParticle::MobState::FREE) {
             finoutput << i.CSite << "\t" << i.LSite << "\t" << i.RSite << "\t" << i.Spin << std::endl;
+
+           /* for (auto j : Lattice.Parts) {
+                if (j.mob != TParticle::MobState::FREE) {
+                    if (i.CSite == j.CSite){
+                       factor+=1;
+                    }
+                    else{
+                        double DX = i.CSite.x *0.25*45/1000 - j.CSite.x *0.25*45/1000;
+                        double DY = i.CSite.y *sqrt(3)*0.25*45/1000 - j.CSite.y *sqrt(3)*0.25*45/1000;
+                        double distance = sqrt(DX * DX + DY * DY );
+                        factor += std::sph_bessel(0, distance);
+                    }
+                }
+            }*/
         }
     }
 

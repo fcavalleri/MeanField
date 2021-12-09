@@ -116,7 +116,7 @@ bool TLattice::EvolveMF2() {
                 // DLAs
                 if (Parts[j].LinkedWith[2] == -1 && Parts[j].LinkedWith[3] == -1 && Parts[j].is_activeA) {
 
-                    if (ranMT() < 2 * (double) (Nfree - Nfix) / (6 * Lx * Ly)) {
+                    if (ranMT() < 2 * (double) (Nfree - Nfix) / (6 * Lx * Ly * Inh)) {
                         // Add a particle in the polimer
                         PutParticle(Parts[j].RSite, (Parts[j].Spin + 3) % 6);
                         IndexCreatedParticles.push_back(Nfix - 1);
@@ -129,7 +129,7 @@ bool TLattice::EvolveMF2() {
                 // YLA
                 if (Parts[j].LinkedWith[2] == -1 && Parts[j].is_activeA) {
 
-                    if (ranMT() < 2 * (double) (Nfree - Nfix) / (6 * Lx * Ly)) {
+                    if (ranMT() < 2 * (double) (Nfree - Nfix) / (6 * Lx * Ly * Inh)) {
                         // Add a particle in the polimer
                         PutParticle(
                                 Parts[j].CSite.GetTranslatedCSite(dx[(Parts[j].Spin + 1) % 6],
@@ -145,7 +145,7 @@ bool TLattice::EvolveMF2() {
                 // DLBs
                 if (Parts[j].LinkedWith[0] == -1 && Parts[j].LinkedWith[1] == -1 && Parts[j].is_activeB) {
 
-                    if (ranMT() < 2 * (double) (Nfree - Nfix) / (6 * Lx * Ly)) {
+                    if (ranMT() < 2 * (double) (Nfree - Nfix) / (6 * Lx * Ly * Inh)) {
                         // Add a particle in the polimer
                         PutParticle(Parts[j].LSite, (Parts[j].Spin + 3) % 6);
                         IndexCreatedParticles.push_back(Nfix - 1);
@@ -159,7 +159,7 @@ bool TLattice::EvolveMF2() {
                 // YLB
                 if (Parts[j].LinkedWith[1] == -1 && Parts[j].is_activeB) {
 
-                    if (ranMT() < 2 * (double) (Nfree - Nfix) / (6 * Lx * Ly)) {
+                    if (ranMT() < 2 * (double) (Nfree - Nfix) / (6 * Lx * Ly * Inh)) {
                         // Add a particle in the polimer
                         PutParticle(
                                 Parts[j].CSite.GetTranslatedCSite(dx[(Parts[j].Spin + 2) % 6],
@@ -175,7 +175,7 @@ bool TLattice::EvolveMF2() {
                 // YLR
                 if (Parts[j].LinkedWith[3] == -1) {
 
-                    if (ranMT() < 2 * (double) (Nfree - Nfix) / (6 * Lx * Ly)) {
+                    if (ranMT() < 2 * (double) (Nfree - Nfix) / (6 * Lx * Ly * Inh)) {
                         // Add a particle in the polimer
                         PutParticle(Parts[j].RSite, (Parts[j].Spin + 2) % 6);
                         IndexCreatedParticles.push_back(Nfix - 1);
@@ -188,7 +188,7 @@ bool TLattice::EvolveMF2() {
                 // YLL
                 if (Parts[j].LinkedWith[0] == -1) {
 
-                    if (ranMT() < 2 * (double) (Nfree - Nfix) / (6 * Lx * Ly)) {
+                    if (ranMT() < 2 * (double) (Nfree - Nfix) / (6 * Lx * Ly * Inh)) {
                         // Add a particle in the polimer
                         PutParticle(Parts[j].LSite, (Parts[j].Spin + 4) % 6);
                         IndexCreatedParticles.push_back(Nfix - 1);
@@ -205,7 +205,7 @@ bool TLattice::EvolveMF2() {
                 // YLA
                 if (Parts[j].LinkedWith[2] == -1 && Parts[j].is_activeA ) {
 
-                    if (ranMT() < 2 * (double) (Nfree - Nfix) / (6 * Lx * Ly)) {
+                    if (ranMT() < 2 * (double) (Nfree - Nfix) / (6 * Lx * Ly * Inh)) {
                         // Add a particle in the polimer
                         PutParticle(
                                 Parts[j].CSite.GetTranslatedCSite(dx[(Parts[j].Spin + 1) % 6],
@@ -219,7 +219,7 @@ bool TLattice::EvolveMF2() {
                 // YLB
                 if (Parts[j].LinkedWith[1] == -1 && Parts[j].is_activeB) {
 
-                    if (ranMT() < 2 * (double) (Nfree - Nfix) / (6 * Lx * Ly)) {
+                    if (ranMT() < 2 * (double) (Nfree - Nfix) / (6 * Lx * Ly * Inh)) {
                         // Add a particle in the polimer
                         PutParticle(
                                 Parts[j].CSite.GetTranslatedCSite(dx[(Parts[j].Spin + 2) % 6],

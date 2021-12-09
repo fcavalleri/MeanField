@@ -89,6 +89,9 @@ private:
     //! Calculate probability to get a free monomer with active central sites
     double probAct();
 
+    //! Inhibition (due to ratio between real and model interaction radius (10) or areas (100) )
+    int Inh = 10;
+
 };
 
 #endif // TLATTICE_H
