@@ -20,8 +20,8 @@ namespace parameters {
     static constexpr int GRID_LEN_X = TSite::Lx;
     static constexpr int GRID_LEN_Y = TSite::Ly;
 
-    static constexpr int T_MAX = 350000; //35000 to mass averaging without inhibition
-    static constexpr int N_FIX_MAX = 15000;
+    static constexpr int T_MAX = 100000; //35000 to mass averaging without inhibition
+    static constexpr int N_FIX_MAX = 10000;
     static constexpr int MSEC_WAIT = 0;
     static constexpr int VIEW = 10000; //visualize every VIEW time steps. FOR REAL TIME SET TO 1
 

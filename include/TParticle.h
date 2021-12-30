@@ -93,6 +93,7 @@ private:
   //! Possibility of a planar rotation (clockwise or anticlockwise)
   static constexpr int R[2] = {-1, 1};
 
+
   //Class Internal Methods
   //! Give random position at the CSite of the monomer
   void RandomizePosition();
